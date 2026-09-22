@@ -1,0 +1,444 @@
+/* ============================================
+   共通設定（全ページ共通の土台）
+============================================ */
+
+/* 全要素に box-sizing: border-box を適用（レイアウトが崩れにくくなる） */
+* {
+  box-sizing: border-box;
+  margin: 0;      /* ブラウザ標準の余白をリセット */
+  padding: 0;
+}
+
+/* テーマカラー・余白を CSS変数で一元管理 */
+:root {
+  /* 色（清潔感のある水色 × 白 を想定。好みで変えてOK） */
+  --color-primary: #2b9bc4;   /* メインの水色 */
+  --color-accent:  #f5a623;   /* アクセント（CTAボタンなど） */
+  --color-text:    #333333;   /* 基本の文字色 */
+  --color-text-gray: #666666; /* 補助的な文字色 */
+  --color-bg:      #f5f5f5;   /* 薄いグレー背景 */
+  --color-white:   #ffffff;
+
+  /* 余白の基準（使い回す間隔をここで管理） */
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 48px;
+  --space-xl: 80px;
+
+  /* コンテンツの最大幅（中央寄せの基準） */
+  --content-width: 1120px;
+}
+
+html { scroll-behavior: smooth; }
+section { scroll-margin-top: 80px; }  /* 数値は自分のヘッダー高さに合わせる */
+
+/* ページ全体の基本設定 */
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  color: var(--color-text);
+  line-height: 1.8;
+}
+
+/* リンクの下線を一旦消す（各所で必要に応じてつける） */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+/* ============================================
+   ① ヘッダー
+   （ここに .header 関連のCSSを書く）
+============================================ */
+.header {
+   position: fixed;        /* 画面に固定。前回の固定ヘッダーで使ったやつ */
+   top: 0;                  /* 上端にぴったり */
+   left: 0;
+   width: 100%;             /* 横幅いっぱい */
+   height: 70px;
+   background: var(--color-white);      /* 白。変数 var(--color-white) が使える */
+   box-shadow: 0 2px 8px rgba(0,0,0,0.1);   /* 薄い影 */
+   z-index: 100;            /* 他の要素より前面に（後で説明します） */
+ }
+
+ .header__inner {
+   height: 100%;                    /* 親(.header)の高さ70pxいっぱいに */
+   max-width: var(--content-width); /* 中身が広がりすぎないよう最大幅を設定 */
+   margin: 0 auto;                  /* 左右autoで中央寄せ */
+   padding: 0 var(--space-md);      /* 左右に余白 */
+ 
+   display: flex;                 /* 並べるモード */
+   justify-content: space-between;         /* ロゴ左・ナビ右に振り分け */
+   align-items: center;             /* 縦を中央に */
+ }
+
+ .header__nav {
+  display: none;           /* 土台（スマホ）では隠す */
+  gap: var(--space-md);    /* gapは残す（PCで表示されたとき効く） */
+}
+
+ .header__nav a {
+   color: var(--color-text);       /* 通常時は黒 */
+   transition: color 0.2s;         /* 色変化をなめらかに（後で説明） */
+ }
+ 
+ .header__nav a:hover {
+   color: var(--color-primary);     /* ホバー時はメインの水色に */
+ }
+
+ .header__hamburger {
+  display: block;
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .header__nav {
+    display: flex;      /* PCでナビを横並び表示 */
+  }
+  .header__hamburger {
+    display: none;      /* PCで≡を隠す */
+  }
+}
+/* ============================================
+   ② ヒーロー
+============================================ */
+.hero {
+   background: var(--color-primary);   /* ← 空欄①：背景を水色に */
+   color: var(--color-white);         /* 文字を白に */
+   padding: 120px var(--space-md);    /* 上下たっぷり、左右は余白 */
+   padding-top: 190px;                /* 固定ヘッダーに隠れない工夫 */
+   text-align: center;                /* ← 空欄②：テキストを中央に */
+ }
+
+ .hero__cta {
+   display: inline-block;              /* リンクをボタン化するのに必要（後で説明） */
+   background: var(--color-accent);    /* アクセント色（オレンジ）で目立たせる */
+   color: var(--color-white);          /* 文字は白 */
+   padding: 16px 40px;                 /* 中の余白。これでボタンらしい大きさに */
+   border-radius: 8px;                 /* 角丸 */
+   font-weight: bold;
+   transition: opacity 0.2s;            /* hoverの変化をなめらかに */
+ }
+ 
+ .hero__cta:hover {
+   opacity: 0.85;                      /* hoverで少し薄く（＝押せる感） */
+ }
+
+
+
+/* ============================================
+   ③ 診療内容（前回の事業内容カードが流用できる）
+============================================ */
+/* セクション全体（背景・上下余白） */
+.service {
+   background: var(--color-bg);
+   padding: var(--space-xl) var(--space-md);   /* 上下80px・左右24px */
+ }
+ 
+ /* 内側：中身を最大幅で中央に（黄金パターン） */
+ .service__inner {
+   max-width: var(--content-width);
+   margin: 0 auto;
+ }
+ 
+ .service__title {
+   text-align: center;
+   font-size: 32px;
+   color: var(--color-primary);
+   margin-bottom: var(--space-lg);
+ }
+ 
+ /* カードを並べる。土台はスマホ想定＝1列 */
+ .service__cards {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: var(--space-md);
+ }
+ 
+ /* タブレット：2列 */
+ @media (min-width: 768px) {
+   .service__cards {
+     grid-template-columns: repeat(2, 1fr);
+   }
+ }
+ 
+ /* PC：3列 */
+ @media (min-width: 1024px) {
+   .service__cards {
+     grid-template-columns: repeat(3, 1fr);
+   }
+ }
+ 
+ /* カード1枚 */
+ .card {
+   background: var(--color-white);
+   border-radius: 12px;
+   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+   padding: var(--space-md);
+   transition: transform 0.2s, box-shadow 0.2s;   /* ★新①：hoverをなめらかに */
+ }
+ 
+ /* ★新②：hoverで浮き上がる */
+ .card:hover {
+   transform: translateY(-8px);
+   box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+ }
+ 
+ .card__icon {
+   width: 64px;
+   height: 64px;
+   background: var(--color-primary);
+   border-radius: 50%;
+   color: var(--color-white);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-bottom: var(--space-sm);
+ }
+ 
+ .card__title {
+   font-size: 20px;
+   color: var(--color-primary);
+   margin-bottom: var(--space-sm);
+ }
+ 
+ .card__text {
+   font-size: 14px;
+   color: var(--color-text-gray);
+ }
+
+
+/* ============================================
+   ④ クリニック概要
+============================================ */
+
+.about {
+   padding: var(--space-xl) var(--space-md);
+ }
+ 
+ .about__inner {
+   max-width: 800px;        /* 概要は少し狭めが読みやすい */
+   margin: 0 auto;
+ }
+ 
+ .about__title {
+   text-align: center;
+   font-size: 32px;
+   color: var(--color-primary);
+   margin-bottom: var(--space-lg);
+ }
+ 
+ .about__list {
+   display: grid;
+   grid-template-columns: 160px 1fr;   /* ★左160px固定・右は残り全部 */
+ }
+ 
+ .about__list dt,
+ .about__list dd {
+   padding: var(--space-sm);
+   border-bottom: 1px solid #ddd;   /* 行の下に薄い線 */
+ }
+ 
+ .about__list dt {
+   font-weight: bold;
+   color: var(--color-primary);
+ }
+
+/* ============================================
+   ⑤ お問い合わせ導線
+============================================ */
+ .contact {
+   background: var(--color-bg);
+   padding: var(--space-xl) var(--space-md);
+   text-align: center;
+ }
+ 
+ .contact__inner {
+   max-width: 800px;
+   margin: 0 auto;
+ }
+ 
+ .contact__title {
+   font-size: 32px;
+   color: var(--color-primary);
+   margin-bottom: var(--space-md);
+ }
+ 
+ .contact__info {
+   font-size: 20px;
+   font-weight: bold;
+   margin: var(--space-md) 0;
+   line-height: 2;
+ }
+ 
+ .contact__info a {
+   color: var(--color-primary);
+ }
+ 
+ .contact__cta {
+   display: inline-block;
+   background: var(--color-accent);
+   color: var(--color-white);
+   padding: 16px 40px;
+   border-radius: 8px;
+   font-weight: bold;
+   transition: opacity 0.2s;
+ }
+ 
+ .contact__cta:hover {
+   opacity: 0.85;
+ }
+
+ /* ============================================
+   ⑥ フッター
+============================================ */
+ 
+ .footer {
+   background: #333;                 /* 暗い背景 */
+   color: var(--color-white);
+   text-align: center;
+   padding: var(--space-lg) var(--space-md);
+ }
+ 
+ .footer__copyright {
+   font-size: 14px;
+ }
+
+
+ /* スマホで、is-openが付いたらナビを表示 */
+@media (max-width: 767px) {
+  .header__nav.is-open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: var(--color-white);
+    padding: var(--space-md);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+}
+
+/* ============================================
+   よくある質問（FAQ）
+============================================ */
+.faq {
+  padding: var(--space-xl) var(--space-md);
+}
+.faq__inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.faq__title {
+  text-align: center;
+  font-size: 32px;
+  color: var(--color-primary);
+  margin-bottom: var(--space-lg);
+}
+.faq__item {
+  border-bottom: 1px solid #ddd;
+}
+.faq__question {
+  width: 100%;
+  padding: var(--space-md) 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--color-text);
+}
+.faq__answer {
+  max-height: 0;                 /* 初期は閉じる */
+  overflow: hidden;
+  transition: max-height 0.3s;
+  color: var(--color-text-gray);
+}
+.faq__item.is-open .faq__answer {
+  max-height: 200px;             /* is-openが付いたら開く */
+  padding-bottom: var(--space-md);
+}
+
+
+/* ============================================
+   トップへ戻るボタン
+============================================ */
+.to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;                /* 初期は透明（見えない） */
+  pointer-events: none;      /* 見えない間はクリックさせない */
+  transition: opacity 0.3s;
+  z-index: 200;
+}
+.to-top.is-visible {
+  opacity: 1;                /* is-visibleが付いたら見える */
+  pointer-events: auto;      /* クリックできる */
+}
+
+/* ============================================
+   お問い合わせフォーム
+============================================ */
+.contact__form {
+  max-width: 500px;
+  margin: var(--space-lg) auto 0;
+  text-align: left;
+}
+.form-group {
+  margin-bottom: var(--space-md);
+}
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+.required {
+  font-size: 0.75em;
+  color: #fff;
+  background: #e74c3c;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+/* エラー時の入力欄（赤枠） */
+.form-group input.is-error,
+.form-group textarea.is-error {
+  border-color: #e74c3c;
+  background: #fff5f4;
+}
+/* エラーメッセージ（赤文字） */
+.error-message {
+  color: #e74c3c;
+  font-size: 0.85em;
+  margin-top: 4px;
+  min-height: 1.2em;
+}
+.submit-btn {
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
